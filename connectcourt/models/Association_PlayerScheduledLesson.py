@@ -6,12 +6,10 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from connectcourt.tools.input_tools import Field, Block , Form
 
-from . import Player , Lesson
-
 class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
-    __tablename__ = 'players_in_lesson'
+    __tablename__ = 'players_in_scheduled_lesson'
     __table_args__ = (
-        db.UniqueConstraint('player_id', 'lesson_id', name='_player_lesson_uc'),
+        db.UniqueConstraint('player_id', 'scheduled_lesson_id', name='_player_scheduled_esson_uc'),
         {'extend_existing': True}
     )
     page_title = 'Relação de Jogador Aula'
@@ -20,10 +18,10 @@ class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
     id = Column(Integer, primary_key=True)
 
     player_id = Column(Integer, ForeignKey('players.id'))
-    lesson_id = Column(Integer, ForeignKey('lessons.id'))
+    scheduled_lesson_id = Column(Integer, ForeignKey('scheduled_lessons.id'))
 
-    player = relationship('Player', back_populates='lessons_relations')
-    lesson = relationship('Lesson', back_populates='players_relations')
+    player = relationship('Player', back_populates='scheduled_lessons_relations')
+    scheduled_lesson = relationship('ScheduledLesson', back_populates='players_relations')
 
     @hybrid_property
     def name(self):

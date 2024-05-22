@@ -17,6 +17,7 @@ class Player(db.Model, model.Model, model.Base):
     phone_number = Column(Integer)
 
     lessons_relations = relationship('Association_PlayerLesson', back_populates='player', cascade="all, delete-orphan")
+    scheduled_lessons_relations = relationship('Association_PlayerLesson', back_populates='player', cascade="all, delete-orphan")
 
     def display_all_info(self):
         searchable_column = {'field': 'name','label':'Nome'}
