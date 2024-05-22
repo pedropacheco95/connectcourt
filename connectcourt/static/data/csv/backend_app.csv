@@ -1,0 +1,4 @@
+creation_datetime,last_change_datetime,id,name,app_model_name,app_image,color,style,url,image_filename
+2024-05-07 16:03:36.892839,2024-05-07 16:04:37.786562,1,Aplicações,Backend_App,Backend_App/20240507170437_app_image.png,#990000,style=background-color:#990000,/editor/display/Backend_App,images/Backend_App/20240507170437_app_image.png
+2024-05-07 16:05:36.821177,2024-05-07 16:05:36.821197,2,Utilizadores,User,Backend_App/20240507170536_app_image.png,#2d5c9a,style=background-color:#2d5c9a,/editor/display/User,images/Backend_App/20240507170536_app_image.png
+2024-05-07 16:06:25.347036,2024-05-07 16:06:25.347052,3,Jogadores,Player,Backend_App/20240507170625_app_image.png,#2b9816,style=background-color:#2b9816,/editor/display/Player,images/Backend_App/20240507170625_app_image.png

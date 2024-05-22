@@ -1,0 +1,70 @@
+{% macro header_block() %}
+    <header class="global_header">
+        <div class="navbar_mobile_header">
+            <div class="navbar_mobile_line">
+                <div class="navbar_width">
+                    <div class="navbar_toggle_container">
+                        <button type="button" class="navbar_toggler" onclick="addOrRemoveClass('.navbar_toggler','collapsed');addOrRemoveClass('.navbar_main_header','show')">
+                            <span class="icon_bar"></span>
+                            <span class="icon_bar"></span>
+                            <span class="icon_bar"></span>
+                        </button>
+                    </div>
+                    <div class="logo_mobile">
+                        <a href="">
+                        </a>
+                    </div>
+                    <div class="user_button_container">
+                        <button class="user_button">
+                            <img src="{{url_for('static',filename='svg/user.svg')}}" class="user_button_image" alt="User Image">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar_main_header">
+            <div class="navbar_line first_line">
+                <div class="navbar_width">
+                    <nav class="navbar">
+                        <div class="main_logo">
+                            <a href="">
+                            </a>
+                        </div>
+                        <div class="auth_buttons_container">
+                            {% if current_user and current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.logout') }}" class="auth_button login_button">
+                                Sign In
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('auth.login') }}" class="auth_button login_button">
+                                Sign In
+                            </a>
+                            <a href="{{ url_for('auth.register') }}" class="auth_button register_button">
+                                Register
+                            </a>
+                            {% endif %}
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="navbar_line second_line">
+                <div class="navbar_width">
+                    <div class="logo">
+                        <a href="{{ url_for('main.index') }}">
+                            <img class="main-logo" src="{{url_for('static',filename='images/logo.png')}}">
+                        </a>
+                    </div>
+                    <nav class="navbar_main_items"> 
+                        <ul class="navbar_items_container">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            {% if get_flashed_messages() %}
+                <div class="alert alert-danger border text-center" role="alert">
+                    {{ get_flashed_messages() | join(" ") }}
+                </div>
+            {% endif %}
+        </div>
+    </header>
+{% endmacro %}

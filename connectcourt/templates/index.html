@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% import 'macros/frontend.html' as frontend %}
+{% import 'macros/calendar.html' as calendar %}
+
+{% block title %}connectcourt{% endblock %}
+
+{% block main %}
+<script src="{{ url_for('static', filename='js/calendar.js')}}" defer></script>
+<div class="first_section_index">
+    <div class="content_container">
+        <div class="content_width">
+            {{calendar.main_calendar()}}
+        </div>
+    </div>
+</div>
+{% endblock %}

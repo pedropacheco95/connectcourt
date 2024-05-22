@@ -1,0 +1,2 @@
+creation_datetime,last_change_datetime,id,name,username,email,password,is_admin,generated_code
+2024-05-07 16:03:36.888368,2024-05-07 16:03:36.888371,1,admin,admin,admin@example.com,pbkdf2:sha256:260000$jou8bFEqKeDzlDIS$053886b5efe1cc07ec19cc56bd49405c6dd13a6938239f269e67ccfc911cfb91,True,

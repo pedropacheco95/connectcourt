@@ -1,0 +1,75 @@
+{% macro main_calendar() %}
+<h2>Calendário</h2>
+<table class="main_calendar">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Seg.</th>
+            <th>Ter.</th>
+            <th>Qua.</th>
+            <th>Qui.</th>
+            <th>Sex.</th>
+            <th>Sab.</th>
+            <th>Dom.</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div class="modal" id="modal_{{picture_name}}">
+    <div class="modal_content input_picture_modal_content">
+        <div class="modal_header">
+            <h4>Acrescenta uma fotografia</h4>
+            <h4 class="closeModal topButton" data-modal_id="modal_{{picture_name}}">&times;</h4>
+        </div>
+        <div class="modal_body input_picture_modal_body">
+            <div class="like_modal">
+                <div class="like_modal_container">
+                    <div class='container-image container-canvas'>
+                        <canvas class="input_image" id='canvas_{{picture_name}}'></canvas>
+                    </div>
+                    <div class='container-image' style="visibility: hidden;display: none;">
+                        <img class="input_image" id='uploaded_image_{{picture_name}}' style="visibility: hidden;display: none;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal_footer">
+            <div class="input_image_footer">
+                <input type="range" id="picture_scale_{{picture_name}}" class="input_image_footer_slider" name="picture_scale" min="0.5" max="5" step="0.01">
+                <div class="input_image_footer_button">
+                    <div class="btn-secondary btn closeModal" data-modal_id="modal_{{picture_name}}">Cancelar</div>
+                    <div class="btn-success btn" data-modal_id="modal_{{picture_name}}" name={{picture_name}} onclick="confirmEditableInputPicture(this);closeModal(modal=false,element=this)">Confirmar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="players">
+    <h3> Jogadores</h3>
+    <div id="players_div"></div>
+</div>
+
+<div id="calendar_modal" class="modal">
+    <div class="modal_content">
+        <div class="modal_header">
+            <h4>Novo evento</h4>
+            <h4 class="closeModal topButton" data-modal_id="calendar_modal">&times;</h4>
+        </div>
+        <div class="modal_body ">
+            <form id="eventForm">
+                <label for="eventTitle">Nome do evento:</label><br>
+                <input type="text" id="eventTitle" name="eventTitle"><br><br>
+                <label for="eventDuration">Duration (Hours):</label><br>
+                <input type="number" id="eventDuration" name="eventDuration" min="1" max="8"><br><br>
+            </form>
+        </div>
+        <div class="modal_footer">
+            <div class="btn-secondary btn closeModal" data-modal_id="calendar_modal">Cancelar</div>
+            <div class="btn-success btn" data-modal_id="calendar_modal" name="Save Event" onclick="saveEvent();">Confirmar</div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
