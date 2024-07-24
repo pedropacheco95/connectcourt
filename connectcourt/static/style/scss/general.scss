@@ -1,5 +1,10 @@
 .global_container{
-    padding-top:9rem;
+    @include size-query(small) {
+        padding-top: 5rem;
+    }
+    @include size-query(large) {
+        padding-top: 9rem;
+    }
     overflow: hidden;
 }
 
@@ -21,16 +26,12 @@
     background-color: rgba(255,255,255,0.3);
     @include size-query(large) {
         min-width: $min-width;
-        width: 70%;
+        width: 95%;
     }
     @include size-query(small) {
         justify-content: space-between;
         width: 100%;
     }
-}
-
-.first_section_index{
-    height: 100vh;
 }
 
 .modal {

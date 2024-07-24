@@ -1,75 +1,162 @@
-window.addEventListener('load', loadHandler);
-function loadHandler(){
-    setupCalendar();
-    getPlayers();
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const weekDaysElement = document.querySelector('.week-days');
+    const timeLabelsElement = document.querySelector('.time-labels');
+    const calendarGridElement = document.querySelector('.calendar-grid');
+    const datePickerButton = document.getElementById('date-picker-button');
+    const datePickerInput = document.getElementById('date-picker-input');
+    const todayButton = document.getElementById('today-button');
+    const prevWeekButton = document.getElementById('prev-week');
+    const nextWeekButton = document.getElementById('next-week');
+    const datePicker = document.querySelector('.date-picker');
 
-function setupCalendar() {
-    const today = new Date();
-    const todayDayOfWeek = today.getDay(); 
-    const tbody = document.querySelector('table tbody');
+    let currentDate = new Date();
 
-    for (let hour = 7; hour <= 14; hour++) { 
-        const row = tbody.insertRow();
-        const timeCell = row.insertCell();
-        timeCell.textContent = `${hour}:00`;
-        timeCell.className = 'time-cell';
-
+    function getWeekDays(date) {
+        const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
+        const weekDays = [];
         for (let i = 0; i < 7; i++) {
-            const dayCell = row.insertCell();
-            dayCell.onclick = function() { openEventModal(this, hour, i); };
+            weekDays.push(new Date(startOfWeek));
+            startOfWeek.setDate(startOfWeek.getDate() + 1);
         }
+        return weekDays;
     }
-}
 
-function openEventModal(cell, hour, dayIndex) {
-    modal = document.getElementById('calendar_modal');
-    openModal(modal);
-    modal.currentCell = cell;
-    modal.startHour = hour;
-    modal.dayIndex = dayIndex;
-}
+    function formatDate(date) {
+        const options = { weekday: 'short', day: 'numeric', month: 'short' };
+        return date.toLocaleDateString('en-US', options);
+    }
 
-function saveEvent() {
-    var modal = document.getElementById("calendar_modal");
-    var eventTitle = document.getElementById("eventTitle").value;
-    var duration = parseInt(document.getElementById("eventDuration").value);
-    var startHour = modal.startHour;
-    var dayIndex = modal.dayIndex;
+    function renderCalendar() {
+        weekDaysElement.innerHTML = '';
+        timeLabelsElement.innerHTML = '';
+        calendarGridElement.innerHTML = '';
 
-    console.log('modal.currentCell',modal.currentCell)
-    console.log('eventTitle',eventTitle)
-    console.log('duration',duration)
-    if (modal.currentCell && eventTitle && duration) {
-        var tbody = document.querySelector('table tbody');
-        var eventDiv = document.createElement('div');
-        eventDiv.className = 'event-block';
-        eventDiv.innerText = eventTitle;
-        eventDiv.style.height = `${60 * duration - 2}px`; // Adjust height based on duration
+        const weekDays = getWeekDays(new Date(currentDate));
 
-        // Calculate the starting cell and apply the event div
-        for (let i = 0; i < duration; i++) {
-            var targetCell = tbody.rows[startHour - 7 + i].cells[dayIndex + 1];
-            if (i === 0) {
-                targetCell.appendChild(eventDiv);
+        weekDays.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.classList.add('day-header');
+            dayElement.textContent = formatDate(day);
+            weekDaysElement.appendChild(dayElement);
+        });
+
+        // Append weekDaysElement to the calendarGridElement
+        calendarGridElement.appendChild(weekDaysElement);
+
+        const emptyTimeLabel = document.createElement('div');
+        emptyTimeLabel.classList.add('time-label');
+        timeLabelsElement.appendChild(emptyTimeLabel);
+        for (let hour = 7; hour <= 19; hour++) {
+            const timeLabel = document.createElement('div');
+            timeLabel.classList.add('time-label');
+            timeLabel.textContent = `${hour}:00`;
+            timeLabelsElement.appendChild(timeLabel);
+
+            for (let col = 0; col < 7; col++) {
+                const timeSlotElement = document.createElement('div');
+                timeSlotElement.classList.add('time-slot');
+                if (hour === new Date().getHours()) {
+                    timeSlotElement.classList.add('current-hour');
+                }
+                calendarGridElement.appendChild(timeSlotElement);
             }
         }
-    }
-    modal.style.display = "none"; // Hide the modal
-    document.getElementById("eventTitle").value = "";
-    document.getElementById("eventDuration").value = "";
-}
 
-function getPlayers(){
-    let model_name = 'Player';
-    players_div = document.getElementById('players_div')
-    customGetJSON(`/api/query/${model_name}` , function(data) {
-        console.log(data)
-        for (let option of data) {
-            var eventDiv = document.createElement('div');
-            eventDiv.className = 'player-block';
-            eventDiv.innerText = option.name;
-            players_div.appendChild(eventDiv);
+        // Add sample events for demonstration purposes
+        addEvent("Meeting with Bob", 1, "08:00", "09:30", "#dc7171");
+        addEvent("Lunch Break", 1, "08:30", "10:00", "#b9b9ff");
+        addEvent("Design Review", 2, "10:00", "12:00", "#5db25d");
+        addEvent("Lunch Break", 4, "12:00", "13:00", "#b9b9ff");
+        addEvent("Lunch Break", 5, "12:30", "14:45", "#b9b9ff");
+
+        datePickerButton.textContent = `${currentDate.toDateString()}`;
+
+        updateCurrentTimeIndicator();
+        setInterval(updateCurrentTimeIndicator, 60000);
+    }
+
+    function setWeek(date) {
+        currentDate = new Date(date);
+        renderCalendar();
+    }
+
+    function addEvent(title, day, startTime, endTime, color) {
+        const [startHour, startMinute] = startTime.split(":").map(Number);
+        const [endHour, endMinute] = endTime.split(":").map(Number);
+
+        const eventElement = document.createElement('div');
+        eventElement.classList.add('event');
+        
+        const eventBlockElement = document.createElement('div');
+        eventBlockElement.classList.add('event_block');
+
+        const eventBlockTitleElement = document.createElement('div');
+        eventBlockTitleElement.classList.add('event_block_title');
+        const eventBlockTimeElement = document.createElement('div');
+        eventBlockTimeElement.classList.add('event_block_time');
+
+        eventBlockTitleElement.textContent = title;
+        eventBlockTimeElement.textContent = `${startTime} - ${endTime}`;
+        eventBlockElement.style.backgroundColor = color;
+        eventBlockElement.appendChild(eventBlockTitleElement);
+        eventBlockElement.appendChild(eventBlockTimeElement);
+
+        const startSlot = (startHour - 7) * 60 + startMinute;
+        const endSlot = (endHour - 7) * 60 + endMinute;
+        const duration = endSlot - startSlot;
+
+        const timeSlotIndex = (startHour - 7) * 7 + day;
+
+        const topPosition = (startMinute / 60) * 100;
+        eventElement.style.top = `${topPosition - 2}px`;
+        eventElement.style.height = `${(duration / 60) * 100}px`;
+        
+        eventElement.appendChild(eventBlockElement)
+        calendarGridElement.children[timeSlotIndex].appendChild(eventElement);
+    }
+
+    function updateCurrentTimeIndicator() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const totalMinutes = (currentHour - 7) * 60 + currentMinutes;
+
+        const timeIndicator = document.querySelector('.time-indicator');
+        if (timeIndicator) {
+            timeIndicator.remove();
         }
+
+        const timeIndicatorElement = document.createElement('div');
+        timeIndicatorElement.classList.add('time-indicator');
+        timeIndicatorElement.style.top = `${(totalMinutes / 60) * 100 + 50}px`;
+
+        calendarGridElement.appendChild(timeIndicatorElement);
+    }
+
+    datePickerButton.addEventListener('click', function() {
+        datePicker.classList.toggle('active');
     });
-}
+
+    datePickerInput.addEventListener('change', function(event) {
+        const selectedDate = new Date(event.target.value);
+        setWeek(selectedDate);
+        datePicker.classList.remove('active');
+    });
+
+    todayButton.addEventListener('click', function() {
+        currentDate = new Date();
+        setWeek(currentDate);
+    });
+
+    prevWeekButton.addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() - 7);
+        setWeek(currentDate);
+    });
+
+    nextWeekButton.addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() + 7);
+        setWeek(currentDate);
+    });
+
+    renderCalendar();
+});
