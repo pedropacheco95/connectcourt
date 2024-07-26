@@ -18,6 +18,7 @@ class ScheduledLesson(db.Model, model.Model, model.Base):
     weekday = Column(String(10))
     
     players_relations = relationship('Association_PlayerScheduledLesson', back_populates='scheduled_lesson', cascade="all, delete-orphan")
+    coaches_relations = relationship('Association_CoachScheduledLesson', back_populates='scheduled_lesson', cascade="all, delete-orphan")
 
     def display_all_info(self):
         searchable_column = {'field': 'name','label':'Nome'}

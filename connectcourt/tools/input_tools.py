@@ -1,6 +1,5 @@
-
 from connectcourt.tools import image_tools, tools
-from datetime import datetime
+from datetime import datetime, time
 from werkzeug.security import generate_password_hash
 
 from connectcourt.model import Image, Imageable
@@ -8,16 +7,16 @@ from connectcourt.model import Image, Imageable
 
 class Field:
 
-    valid_types = ['Text','Integer',
-                'Float','Password',
-                'Select','Picture',
-                'EditablePicture', 'MultiplePictures',
-                'ManyToMany','Color',
-                'OneToMany','ManyToOne',
-                'Boolean','Date',
-                'DateTime']
+    valid_types = ['Text', 'Integer',
+                   'Float', 'Password',
+                   'Select', 'Picture',
+                   'EditablePicture', 'MultiplePictures',
+                   'ManyToMany', 'Color',
+                   'OneToMany', 'ManyToOne',
+                   'Boolean', 'Date',
+                   'DateTime', 'Time']
 
-    def __init__(self, instance_id, model, label, name, type, value = None, options = None, required = False, related_model = None,mandatory_path = None):
+    def __init__(self, instance_id, model, label, name, type, value=None, options=None, required=False, related_model=None, mandatory_path=None):
         if label is None:
             raise ValueError('label is required')
         if name is None:
@@ -48,8 +47,8 @@ class Field:
             'DateTime': self.set_date_value,
             'Boolean': self.set_boolean_value,
             'Password': self.set_password_value,
+            'Time': self.set_time_value
         }
-
 
     def get_field_dict(self):
         return {
@@ -60,19 +59,19 @@ class Field:
             "required": self.required if self.required else False,
             "related_model": self.related_model if self.related_model else None,
         }
-    
+
     def set_picture_value(self, request):
         now = datetime.now()
         formatted = now.strftime("%Y%m%d%H%M%S")
-        file , name = image_tools.file_handler(request.files.getlist(self.name)[0]) if request.files.getlist(self.name) else None 
-        name = '{folder}/{added}_{name}'.format(folder=self.model,name=name,added=formatted)
+        file, name = image_tools.file_handler(request.files.getlist(self.name)[0]) if request.files.getlist(self.name) else None
+        name = '{folder}/{added}_{name}'.format(folder=self.model, name=name, added=formatted)
         if self.mandatory_path:
             name = self.mandatory_path
-        saved = image_tools.save_file(file,name)
+        saved = image_tools.save_file(file, name)
         if saved:
             self.value = name
         return True
-    
+
     def set_multiple_picture_value(self, request):
         now = datetime.now()
         formatted = now.strftime("%Y%m%d%H%M%S")
@@ -81,21 +80,21 @@ class Field:
         if files:
             for i, file in enumerate(files):
                 image = Image()
-                file , name = image_tools.file_handler(file)
-                name = '{folder}/{added}_{index}_{name}'.format(folder=self.model,name=name,added=formatted,index=i)
+                file, name = image_tools.file_handler(file)
+                name = '{folder}/{added}_{index}_{name}'.format(folder=self.model, name=name, added=formatted, index=i)
                 if self.mandatory_path:
                     name = self.mandatory_path
-                saved = image_tools.save_file(file,name)
+                saved = image_tools.save_file(file, name)
                 if saved:
                     image.filename = name
                     image.create()
                     self.value.append(image)
         return True
-    
+
     def set_relationship_value(self, request):
         self.value = [int(ele) for ele in request.form.getlist(self.name) if request.form.getlist(self.name)]
         return True
-    
+
     def set_date_value(self, request):
         format = {
             'Date': tools.str_to_date,
@@ -109,11 +108,23 @@ class Field:
 
         self.value = None
         return False
-    
+
+    def set_time_value(self, request):
+        if self.name in request.form:
+            input_value = request.form[self.name]
+            try:
+                self.value = datetime.strptime(input_value, '%H:%M:%S').time()
+            except ValueError:
+                self.value = None
+            return True
+
+        self.value = None
+        return False
+
     def set_boolean_value(self, request):
         self.value = True if request.form[self.name] == 'true' else False
         return True
-    
+
     def set_password_value(self, request):
         self.value = generate_password_hash(request.form[self.name])
         return True
@@ -125,7 +136,7 @@ class Field:
         return True
 
 class Block:
-    def __init__(self,name,fields):
+    def __init__(self, name, fields):
         if name is None:
             raise ValueError('name is required')
         if fields is None:
@@ -142,7 +153,7 @@ class Block:
         }
 
 class Tab:
-    def __init__(self, title, fields,orientation = 'vertical'):
+    def __init__(self, title, fields, orientation='vertical'):
         if title is None:
             raise ValueError('tab_name is required')
         if fields is None:
@@ -167,18 +178,18 @@ class Form:
         self.tabs = []
         self.fields = []
 
-    def add_block(self,block):
+    def add_block(self, block):
         if not isinstance(block, Block):
             raise ValueError('block is not a Block object')
         if block.name in [block.name for block in self.blocks]:
             raise ValueError('name already exists')
-        if block.name not in ['picture_block','info_block']:
+        if block.name not in ['picture_block', 'info_block']:
             raise ValueError('name is not valid')
         self.blocks.append(block)
         for field in block.fields:
             self.fields.append(field)
-        
-    def add_tab(self,tab):
+
+    def add_tab(self, tab):
         if not isinstance(tab, Tab):
             raise ValueError('tab is not a Tab object')
         self.tabs.append(tab)
@@ -191,7 +202,7 @@ class Form:
             "tabs": self.tabs,
         }
 
-    def set_values(self,request):
+    def set_values(self, request):
         for field in self.fields:
             field.set_value(request)
         return {field.name: field.value for field in self.fields}

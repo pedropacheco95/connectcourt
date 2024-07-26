@@ -1,6 +1,6 @@
 {% macro general_input(type,label,name,options = None, required = False,value = None, model=False, related_model=False, readonly=False) %}
 
-    {% if type not in ['Text','Integer','Float','Password','Select','Picture','EditablePicture','ManyToMany','ManyToOne','OneToMany', 'Color','Date','DateTime','Boolean','MultiplePictures'] %}
+    {% if type not in ['Text','Integer','Float','Password','Select','Picture','EditablePicture','ManyToMany','ManyToOne','OneToMany', 'Color','Date','DateTime','Boolean','MultiplePictures','Time'] %}
         THIS INPUT DOES NOT EXIST
     {% elif type == 'Text' %}
         {{ text_input(label,name,required,value,readonly) }}
@@ -30,6 +30,8 @@
         {{ date_input(label,name,required,value,readonly) }}
     {% elif type == 'DateTime' %}
         {{ datetime_input(label,name,required,value,readonly) }}
+    {% elif type == 'Time' %}
+        {{ time_input(label,name,required,value,readonly) }}
     {% elif type == 'Boolean' %}
         {{ boolean_input(label,name,required,value,readonly) }}
     {% endif %}
@@ -305,6 +307,20 @@
     onfocus="setFocus(true,this,this.parentNode),turnToDateTimeInput(this)"
     onblur="setFocus(false,this,this.parentNode),turnToTextInput(this)"
     {% if value %} value="{{value.strftime('%d/%m/%Y, %H:%M')}}" {% endif %}
+    {% if readonly %} readonly {% endif %}/>
+</div>
+{% endmacro %}
+
+{% macro time_input(label, name, required, value=value, readonly=readonly) %}
+<div class="input-box {% if value %}focus{% endif %}">
+    <label class="input-label">{{label}}</label>
+    <input 
+    type="text"
+    name="{{name}}" 
+    class="input-1 {{ 'needs-validation' if required }}" 
+    onfocus="setFocus(true,this,this.parentNode),turnToTimeInput(this)"
+    onblur="setFocus(false,this,this.parentNode),turnToTextInput(this)"
+    {% if value %} value="{{value.strftime('%H:%M:%S')}}" {% endif %}
     {% if readonly %} readonly {% endif %}/>
 </div>
 {% endmacro %}

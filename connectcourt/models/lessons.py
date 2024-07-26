@@ -1,6 +1,6 @@
 from connectcourt import model 
 from connectcourt.sql_db import db
-from sqlalchemy import Column, Integer , String , Enum , ForeignKey , Boolean
+from sqlalchemy import Column, Integer , String , Enum , ForeignKey , Boolean, Time, DateTime
 from sqlalchemy.orm import relationship
 
 from connectcourt.tools.input_tools import Field, Block, Tab , Form
@@ -14,9 +14,11 @@ class Lesson(db.Model, model.Model, model.Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(80))
     level = Column(Enum('Very Low','Low','Medium','High','Very High', name='level'))
-    hour = Column(String(80))
+    duration = Column(Time)
+    datetime = Column(DateTime)  
     
     players_relations = relationship('Association_PlayerLesson', back_populates='lesson', cascade="all, delete-orphan")
+    coaches_relations = relationship('Association_CoachLesson', back_populates='lesson', cascade="all, delete-orphan")
 
     def display_all_info(self):
         searchable_column = {'field': 'name','label':'Nome'}

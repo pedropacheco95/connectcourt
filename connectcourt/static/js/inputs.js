@@ -268,3 +268,9 @@ function turnToTextInput(element){
     }
 }
 
+function turnToTimeInput(element){
+    if (!element.hasAttribute('readonly')){
+        element.type = 'time';
+    }
+}
+
