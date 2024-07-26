@@ -5,18 +5,18 @@ from sqlalchemy.orm import relationship
 
 from connectcourt.tools.input_tools import Field, Block, Tab , Form
 
-class Lesson(db.Model, model.Model, model.Base):
-    __tablename__ = 'lessons'
+class Coach(db.Model, model.Model, model.Base):
+    __tablename__ = 'coaches'
     __table_args__ = {'extend_existing': True}
-    page_title = 'Aulas'
-    model_name = 'Lesson'
+    page_title = 'Treinadores'
+    model_name = 'Coach'
     
     id = Column(Integer, primary_key=True)
     name = Column(String(80))
-    level = Column(Enum('Very Low','Low','Medium','High','Very High', name='level'))
-    hour = Column(String(80))
-    
-    players_relations = relationship('Association_PlayerLesson', back_populates='lesson', cascade="all, delete-orphan")
+    phone_number = Column(Integer)
+
+    lessons_relations = relationship('Association_CoachLesson', back_populates='coach', cascade="all, delete-orphan")
+    scheduled_lessons_relations = relationship('Association_CoachScheduledLesson', back_populates='coach', cascade="all, delete-orphan")
 
     def display_all_info(self):
         searchable_column = {'field': 'name','label':'Nome'}
@@ -35,8 +35,7 @@ class Lesson(db.Model, model.Model, model.Base):
 
         fields = [
             get_field(name='name',label='Nome',type='Text',required=True),
-            get_field(name='hour',label='Hora',type='Text',required=True),
-            get_field(name='level',label='Nivel',type='Select',options=['Very Low','Low','Medium','High','Very High']),
+            get_field(name='phone_number',label='Numero de telefone',type='Integer',required=True),
         ]
         info_block = Block('info_block',fields)
         form.add_block(info_block)

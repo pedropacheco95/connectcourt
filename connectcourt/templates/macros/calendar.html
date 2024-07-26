@@ -7,13 +7,17 @@
     </div>
     <div class="calendar-header-right">
         <div class="date-picker">
-            <button id="date-picker-button"></button>
+            <button id="date-picker-button">
+                <img src="{{url_for('static',filename='svg/calendar.svg')}}" class="calendar_button" alt="Calendar Image">
+            </button>
             <div id="date-picker-dropdown" class="dropdown-content">
                 <input type="date" id="date-picker-input">
             </div>
         </div>
     </div>
 </div>
+<div class="week-days-mobile"></div>
+<div class="daily-calendar"></div>
 <div class="calendar-container">
     <div class="time-labels"></div>
     <div class="calendar-grid">

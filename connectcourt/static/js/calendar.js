@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const weekDaysElement = document.querySelector('.week-days');
+    const weekDaysMobileElement = document.querySelector('.week-days-mobile');
     const timeLabelsElement = document.querySelector('.time-labels');
     const calendarGridElement = document.querySelector('.calendar-grid');
     const datePickerButton = document.getElementById('date-picker-button');
@@ -8,8 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevWeekButton = document.getElementById('prev-week');
     const nextWeekButton = document.getElementById('next-week');
     const datePicker = document.querySelector('.date-picker');
+    const dailyCalendar = document.querySelector('.daily-calendar');
 
     let currentDate = new Date();
+    let today = new Date();
 
     function getWeekDays(date) {
         const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
@@ -23,21 +26,89 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function formatDate(date) {
         const options = { weekday: 'short', day: 'numeric', month: 'short' };
-        return date.toLocaleDateString('en-US', options);
+        const formattedDate = date.toLocaleDateString('en-US', options);
+    
+        const dateParts = formattedDate.split(' ');
+        const weekday = dateParts[0];
+        const month = dateParts[1];
+        const day = dateParts[2];
+    
+        return `<span class="weekday">${weekday.replace(',', '')}</span> <span class="month">${month}</span> <span class="day">${day}</span>`;
+    }
+
+    function hideAllSlots() {
+        document.querySelectorAll('.daily-slot').forEach(slot => slot.classList.remove('active'));
+        document.querySelectorAll('.day-header').forEach(header => header.classList.remove('active'));
+    }
+
+    function showSlot(index) {
+        document.querySelectorAll('.daily-slot')[index].classList.add('active');
+    }
+
+    function longFormatDate(date){
+        const optionsWeekday = { weekday: 'long' };
+        const optionsDay = { day: 'numeric' };
+        const optionsMonth = { month: 'long' };
+        const optionsYear = { year: 'numeric' };
+
+        const formatterWeekday = new Intl.DateTimeFormat('en-GB', optionsWeekday);
+        const formatterDay = new Intl.DateTimeFormat('en-GB', optionsDay);
+        const formatterMonth = new Intl.DateTimeFormat('en-GB', optionsMonth);
+        const formatterYear = new Intl.DateTimeFormat('en-GB', optionsYear);
+
+        const weekday = formatterWeekday.format(date);
+        const day = formatterDay.format(date);
+        const month = formatterMonth.format(date);
+        const year = formatterYear.format(date);
+
+        const formattedDate = `${weekday}, ${day} of ${month} of ${year}`;
+        return formattedDate
     }
 
     function renderCalendar() {
         weekDaysElement.innerHTML = '';
         timeLabelsElement.innerHTML = '';
         calendarGridElement.innerHTML = '';
+        weekDaysMobileElement.innerHTML = '';
+        dailyCalendar.innerHTML = '';
 
         const weekDays = getWeekDays(new Date(currentDate));
 
-        weekDays.forEach(day => {
+        weekDays.forEach((day, index) => {
             const dayElement = document.createElement('div');
             dayElement.classList.add('day-header');
-            dayElement.textContent = formatDate(day);
+            dayElement.innerHTML = formatDate(day);
             weekDaysElement.appendChild(dayElement);
+            
+            const clonedDayElement = dayElement.cloneNode(true);
+
+            clonedDayElement.addEventListener('click', function() {
+                console.log('HERE')
+                hideAllSlots();
+                showSlot(index);
+                clonedDayElement.classList.add('active');
+            });
+
+            const dailySlot = document.createElement('div');
+            const dailyTitle = document.createElement('div');
+            dailySlot.classList.add('daily-slot');
+            dailyTitle.classList.add('daily-day-title');
+            dailyTitle.textContent = longFormatDate(day);
+            if (index == 0){
+                clonedDayElement.classList.add('active');
+                dailySlot.classList.add('active');
+            }
+            if (day.getTime() < today.getTime()) {
+                clonedDayElement.classList.add('past-day');
+            }
+            if (day.getTime() == today.getTime()){
+                clonedDayElement.classList.add('active');
+                dailySlot.classList.add('active');
+                hideAllSlots();
+            }
+            weekDaysMobileElement.appendChild(clonedDayElement);
+            dailySlot.appendChild(dailyTitle);
+            dailyCalendar.appendChild(dailySlot);
         });
 
         // Append weekDaysElement to the calendarGridElement
@@ -61,15 +132,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 calendarGridElement.appendChild(timeSlotElement);
             }
         }
+        
+        let events = [
+            {title:"Meeting with Bob", weekDay:1, begging:"08:00", end:"09:30",color:"#dc7171"},
+            {title:"Lunch Break", weekDay:1, begging:"08:30", end:"10:00",color:"#b9b9ff"},
+            {title:"Meeting with Bob", weekDay:2, begging:"10:00", end:"12:00",color:"#5db25d"},
+            {title:"Lunch Break", weekDay:4, begging:"12:00", end:"13:00",color:"#b9b9ff"},
+            {title:"Lunch Break", weekDay:5, begging:"12:30", end:"14:45",color:"#b9b9ff"},
+        ]
+        
+        addEvents(events)
 
-        // Add sample events for demonstration purposes
-        addEvent("Meeting with Bob", 1, "08:00", "09:30", "#dc7171");
-        addEvent("Lunch Break", 1, "08:30", "10:00", "#b9b9ff");
-        addEvent("Design Review", 2, "10:00", "12:00", "#5db25d");
-        addEvent("Lunch Break", 4, "12:00", "13:00", "#b9b9ff");
-        addEvent("Lunch Break", 5, "12:30", "14:45", "#b9b9ff");
-
-        datePickerButton.textContent = `${currentDate.toDateString()}`;
+        const existingDateInputText = document.querySelector('.date-input-text');
+        if (existingDateInputText) {
+            existingDateInputText.remove();
+        }
+        const dateInputText = document.createElement('div');
+        dateInputText.classList.add('date-input-text');
+        dateInputText.textContent = `${currentDate.toDateString()}`;
+        datePickerButton.appendChild(dateInputText);
 
         updateCurrentTimeIndicator();
         setInterval(updateCurrentTimeIndicator, 60000);
@@ -80,7 +161,14 @@ document.addEventListener('DOMContentLoaded', function() {
         renderCalendar();
     }
 
-    function addEvent(title, day, startTime, endTime, color) {
+    function addEvents(events) {
+        for (obj of events){
+            addEventGrid(obj.title, obj.weekDay, obj.begging, obj.end, obj.color);
+            addEventDaily(obj.title, obj.weekDay, obj.begging, obj.end, obj.color);
+        }
+    }
+
+    function addEventGrid(title, day, startTime, endTime, color) {
         const [startHour, startMinute] = startTime.split(":").map(Number);
         const [endHour, endMinute] = endTime.split(":").map(Number);
 
@@ -113,6 +201,30 @@ document.addEventListener('DOMContentLoaded', function() {
         
         eventElement.appendChild(eventBlockElement)
         calendarGridElement.children[timeSlotIndex].appendChild(eventElement);
+    }
+
+    function addEventDaily(title, day, startTime, endTime, color) {    
+        const eventElement = document.createElement('div');
+        eventElement.classList.add('event');
+    
+        const eventBlockElement = document.createElement('div');
+        eventBlockElement.classList.add('event_block');
+    
+        const eventBlockTitleElement = document.createElement('div');
+        eventBlockTitleElement.classList.add('event_block_title');
+        const eventBlockTimeElement = document.createElement('div');
+        eventBlockTimeElement.classList.add('event_block_time');
+    
+        eventBlockTitleElement.textContent = title;
+        eventBlockTimeElement.textContent = `${startTime} - ${endTime}`;
+        eventBlockElement.style.borderLeftColor = color;
+        eventBlockElement.appendChild(eventBlockTimeElement);
+        eventBlockElement.appendChild(eventBlockTitleElement);
+    
+        eventElement.appendChild(eventBlockElement);
+    
+        const dailyElement = dailyCalendar.children[day];
+        dailyElement.appendChild(eventElement);
     }
 
     function updateCurrentTimeIndicator() {

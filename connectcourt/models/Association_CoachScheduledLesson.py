@@ -6,42 +6,42 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from connectcourt.tools.input_tools import Field, Block , Form
 
-class Association_PlayerLesson(db.Model ,model.Model, model.Base):
-    __tablename__ = 'players_in_lesson'
+class Association_CoachScheduledLesson(db.Model ,model.Model, model.Base):
+    __tablename__ = 'coaches_in_scheduled_lesson'
     __table_args__ = (
-        db.UniqueConstraint('player_id', 'lesson_id', name='_player_lesson_uc'),
+        db.UniqueConstraint('coach_id', 'scheduled_lesson_id', name='_coach_scheduled_lesson_uc'),
         {'extend_existing': True}
     )
-    page_title = 'Relação de Jogador Aula'
-    model_name = 'Association_PlayerLesson'
+    page_title = 'Relação de Treinador Aula'
+    model_name = 'Association_CoachScheduledLesson'
 
     id = Column(Integer, primary_key=True)
 
-    player_id = Column(Integer, ForeignKey('players.id'))
-    lesson_id = Column(Integer, ForeignKey('lessons.id'))
+    coach_id = Column(Integer, ForeignKey('coaches.id'))
+    scheduled_lesson_id = Column(Integer, ForeignKey('scheduled_lessons.id'))
 
-    player = relationship('Player', back_populates='lessons_relations')
-    lesson = relationship('Lesson', back_populates='players_relations')
+    coach = relationship('Coach', back_populates='scheduled_lessons_relations')
+    scheduled_lesson = relationship('ScheduledLesson', back_populates='coaches_relations')
 
     @hybrid_property
     def name(self):
-        return f"{self.player} in {self.lesson}"
+        return f"{self.coach} in {self.lesson}"
 
     def __repr__(self):
         try:
-            return f"{self.player}: {self.lesson}"
+            return f"{self.coach}: {self.lesson}"
         except:
             return f"Empty {self.model_name}"
     
     def __str__(self):
         try:
-            return f"{self.lesson}: {self.player}"
+            return f"{self.lesson}: {self.coach}"
         except:
             return f"Empty {self.model_name}"
         
 
     def display_all_info(self):
-        searchable_column = {'field': 'player','label':'Jogador'}
+        searchable_column = {'field': 'coach','label':'Treinador'}
         table_columns = [
             {'field': 'lesson','label':'Aula'},
             searchable_column,
@@ -56,7 +56,7 @@ class Association_PlayerLesson(db.Model ,model.Model, model.Base):
         # Create Info block
         fields = [
             get_field(name='lesson',label='Aulas',type='ManyToOne',related_model='Lesson'),
-            get_field(name='player',label='Jogador',type='ManyToOne',related_model='Player'),
+            get_field(name='coach',label='Treinador',type='ManyToOne',related_model='Coach'),
             
         ]
         info_block = Block('info_block',fields)

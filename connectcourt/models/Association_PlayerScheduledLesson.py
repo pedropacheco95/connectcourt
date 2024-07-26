@@ -9,7 +9,7 @@ from connectcourt.tools.input_tools import Field, Block , Form
 class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
     __tablename__ = 'players_in_scheduled_lesson'
     __table_args__ = (
-        db.UniqueConstraint('player_id', 'scheduled_lesson_id', name='_player_scheduled_esson_uc'),
+        db.UniqueConstraint('player_id', 'scheduled_lesson_id', name='_player_scheduled_lesson_uc'),
         {'extend_existing': True}
     )
     page_title = 'Relação de Jogador Aula'

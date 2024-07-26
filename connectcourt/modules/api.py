@@ -137,3 +137,7 @@ def send_whatsapp_message():
     
     # Provide a simple form for GET request to test
     return render_template('whatsapp.html')
+
+@bp.route('/lessons/<int:coach_id>')
+def get_coaches_lessons(coach_id):
+    return jsonify()
