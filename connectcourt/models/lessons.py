@@ -37,8 +37,9 @@ class Lesson(db.Model, model.Model, model.Base):
 
         fields = [
             get_field(name='name',label='Nome',type='Text',required=True),
-            get_field(name='hour',label='Hora',type='Text',required=True),
             get_field(name='level',label='Nivel',type='Select',options=['Very Low','Low','Medium','High','Very High']),
+            get_field(name='datetime',label='Dia e hora',type='DateTime',required=True),
+            get_field(name='duration',label='Duração',type='Time',required=True),
         ]
         info_block = Block('info_block',fields)
         form.add_block(info_block)

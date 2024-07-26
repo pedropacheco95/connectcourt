@@ -112,10 +112,7 @@ class Field:
     def set_time_value(self, request):
         if self.name in request.form:
             input_value = request.form[self.name]
-            try:
-                self.value = datetime.strptime(input_value, '%H:%M:%S').time()
-            except ValueError:
-                self.value = None
+            self.value = tools.str_to_time(input_value)
             return True
 
         self.value = None
@@ -203,6 +200,15 @@ class Form:
         }
 
     def set_values(self, request):
+        print('==================================')
+        print('==================================')
+        print('==================================')
+        print([field.name for field in self.fields])
+        print([field.type for field in self.fields])
+        print([field.value for field in self.fields])
+        print('==================================')
+        print('==================================')
+        print('==================================')
         for field in self.fields:
             field.set_value(request)
         return {field.name: field.value for field in self.fields}

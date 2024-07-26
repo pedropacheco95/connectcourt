@@ -128,3 +128,20 @@ def str_to_datetime(s):
         except ValueError:
             pass
     raise ValueError(f"Cannot convert {s} to Date")
+
+def str_to_time(s):
+    string_formats = [
+        '%H:%M:%S',          # 23:59:59
+        '%H:%M',             # 23:59
+        '%I:%M %p',          # 11:59 PM
+        '%I %p',             # 11 PM
+        '%H:%M:%S.%f',       # 23:59:59.000000
+    ]
+    
+    for fmt in string_formats:
+        try:
+            time_obj = datetime.strptime(s, fmt).time()
+            return time_obj
+        except ValueError:
+            pass
+    raise ValueError(f"Cannot convert {s} to Time")

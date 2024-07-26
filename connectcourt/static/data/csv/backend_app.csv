@@ -1,4 +1,7 @@
 creation_datetime,last_change_datetime,id,name,app_model_name,app_image,color,style,url,image_filename
-2024-05-07 16:03:36.892839,2024-05-07 16:04:37.786562,1,Aplicações,Backend_App,Backend_App/20240507170437_app_image.png,#990000,style=background-color:#990000,/editor/display/Backend_App,images/Backend_App/20240507170437_app_image.png
-2024-05-07 16:05:36.821177,2024-05-07 16:05:36.821197,2,Utilizadores,User,Backend_App/20240507170536_app_image.png,#2d5c9a,style=background-color:#2d5c9a,/editor/display/User,images/Backend_App/20240507170536_app_image.png
-2024-05-07 16:06:25.347036,2024-05-07 16:06:25.347052,3,Jogadores,Player,Backend_App/20240507170625_app_image.png,#2b9816,style=background-color:#2b9816,/editor/display/Player,images/Backend_App/20240507170625_app_image.png
+2024-07-26 18:05:37.696574,2024-07-26 18:06:44.238923,1,Aplicações,Backend_App,Backend_App/20240726190644_app_image.png,#e14141,style=background-color:#e14141,/editor/display/Backend_App,images/Backend_App/20240726190644_app_image.png
+2024-07-26 18:12:20.537790,2024-07-26 18:12:20.537799,2,Utilizadores,User,Backend_App/20240726191220_app_image.png,#6464c8,style=background-color:#6464c8,/editor/display/User,images/Backend_App/20240726191220_app_image.png
+2024-07-26 18:13:05.437428,2024-07-26 18:13:05.437438,3,Jogadores,Player,Backend_App/20240726191305_app_image.png,#64c864,style=background-color:#64c864,/editor/display/Player,images/Backend_App/20240726191305_app_image.png
+2024-07-26 18:13:34.542862,2024-07-26 18:13:34.542872,4,Aulas,Lesson,Backend_App/20240726191334_app_image.png,#c86464,style=background-color:#c86464,/editor/display/Lesson,images/Backend_App/20240726191334_app_image.png
+2024-07-26 18:15:05.460317,2024-07-26 18:15:05.460324,5,Treinador,Coach,Backend_App/20240726191505_app_image.png,#c8c801,style=background-color:#c8c801,/editor/display/Coach,images/Backend_App/20240726191505_app_image.png
+2024-07-26 18:15:39.517183,2024-07-26 18:15:39.517190,6,Aulas Marcadas,ScheduledLesson,Backend_App/20240726191539_app_image.png,#64c8c8,style=background-color:#64c8c8,/editor/display/ScheduledLesson,images/Backend_App/20240726191539_app_image.png
