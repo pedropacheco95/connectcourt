@@ -100,7 +100,6 @@ class Field:
             'Date': tools.str_to_date,
             'DateTime': tools.str_to_datetime,
         }
-
         if self.name in request.form:
             input_value = request.form[self.name]
             self.value = format[self.type](input_value)
@@ -200,15 +199,6 @@ class Form:
         }
 
     def set_values(self, request):
-        print('==================================')
-        print('==================================')
-        print('==================================')
-        print([field.name for field in self.fields])
-        print([field.type for field in self.fields])
-        print([field.value for field in self.fields])
-        print('==================================')
-        print('==================================')
-        print('==================================')
         for field in self.fields:
             field.set_value(request)
         return {field.name: field.value for field in self.fields}

@@ -80,9 +80,9 @@ def try_convert(value):
     return value
 
 def str_to_bool(s):
-    if s.lower() == 'true':
+    if s.lower() in ['true','on']:
         return True
-    elif s.lower() == 'false':
+    elif s.lower() in ['false','off']:
         return False
     else:
         raise ValueError(f"Cannot convert {s} to boolean")

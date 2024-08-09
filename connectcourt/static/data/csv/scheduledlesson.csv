@@ -1,0 +1,4 @@
+creation_datetime,last_change_datetime,id,name,level,start_datetime,duration,number_of_lessons
+2024-07-30 10:35:41.440474,2024-07-30 10:35:41.440492,1,Aula de segunda de manha,Low,2024-07-29 10:30:00,02:30:00,10
+2024-07-30 12:47:41.979189,2024-07-30 12:47:41.979204,2,Aula de terça de tarde,High,2024-07-30 14:45:00,02:45:00,5
+2024-07-30 13:17:37.327949,2024-07-30 13:17:37.327954,3,Aulas de quinta de manhã,Very Low,2024-08-01 10:00:00,03:00:00,14

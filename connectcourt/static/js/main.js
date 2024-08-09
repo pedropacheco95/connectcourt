@@ -12,6 +12,14 @@ document.addEventListener('click', function(event) {
     }
 });
 
+window.addEventListener('load', function () {
+    var loader = document.getElementById('loading-overlay');
+    setTimeout(function() {
+        loader.style.display = 'none';
+    }, 500);
+});
+
+
 function duplicateElement(element){
     var newElement = element.cloneNode(true);
     element.parentNode.insertBefore(newElement, element.nextSibling);
@@ -386,4 +394,41 @@ function setupCalendar() {
             row.insertCell();
         }
     }
+}
+
+function submitForm(ele){
+    let form_id = ele.dataset.form_id;
+    let form = document.getElementById(form_id);
+    form.submit();
+    form.reset();
+}
+
+function showLoading() {
+    var loader = document.getElementById('loading-overlay');
+    loader.style.display = 'flex';
+}
+
+function hideLoading() {
+    var loader = document.getElementById('loading-overlay');
+    loader.style.display = 'none';
+}
+
+function waitForElement(selector, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        const interval = 100;
+        const endTime = Date.now() + timeout;
+
+        const checkElement = () => {
+            const element = document.querySelector(selector);
+            if (element) {
+                resolve(element);
+            } else if (Date.now() < endTime) {
+                setTimeout(checkElement, interval);
+            } else {
+                reject(new Error('Element not found within the timeout period'));
+            }
+        };
+
+        checkElement();
+    });
 }

@@ -1,5 +1,5 @@
 {% macro text_input(label,name,required) %}
-<div class="input-box {% if value %}focus{% endif %}">
+<div class="input-box">
     <label class="input-label">
         <span class="label"> {{label}} </span>
         <span class="cover_line"></span>
@@ -10,12 +10,13 @@
     class="input-1 {{ 'needs-validation' if required }}"
     onfocus="setFocus(true,this,this.parentNode)" 
     onblur="setFocus(false,this,this.parentNode)"
+    autocomplete="off"
     />
 </div>
 {% endmacro %}
 
 {% macro password_input(label,name,required) %}
-<div class="input-box {% if value %}focus{% endif %}">
+<div class="input-box">
     <label class="input-label">
         <span class="label"> {{label}} </span>
         <span class="cover_line"></span>
@@ -26,13 +27,28 @@
     class="input-1 {{ 'needs-validation' if required }}"
     onfocus="setFocus(true,this,this.parentNode)" 
     onblur="setFocus(false,this,this.parentNode)" 
+    autocomplete="off"
     />
 </div>
 {% endmacro %}
 
+{% macro integer_input(label,name,required) %}
+<div class="input-box">
+    <label class="input-label">{{label}}</label>
+    <input 
+    type="number" 
+    inputmode="numeric" 
+    pattern="[0-9]*"  
+    name="{{name}}" 
+    class="input-1" 
+    onfocus="setFocus(true,this,this.parentNode)"
+    onblur="setFocus(false,this,this.parentNode)"
+    autocomplete="off"/>
+</div>
+{% endmacro %}
 
-{% macro float_input(label, name, required, value=value, readonly=readonly) %}
-<div class="input-box {% if value %}focus{% endif %}">
+{% macro float_input(label, name, required) %}
+<div class="input-box">
     <label class="input-label">
         <span class="label"> {{label}} </span>
         <span class="cover_line"></span>
@@ -45,12 +61,26 @@
     name="{{name}}" 
     class="input-1 {{ 'needs-validation' if required }}" 
     onfocus="setFocus(true,this,this.parentNode)"
-    onblur="setFocus(false,this,this.parentNode)"/>
+    onblur="setFocus(false,this,this.parentNode)"
+    autocomplete="off"/>
 </div>
 {% endmacro %}
 
+{% macro select_input(label, name, options, required) %}
+<div class="input-box">
+    <label class="input-label input-label-select">{{label}}</label>
+    <select class="input-1" name="{{name}}" onfocus="setFocus(true,this,this.parentNode)" onblur="setFocus(false,this,this.parentNode)">
+        <option value="-1"></option>
+        {% for option in options %}
+        <option value="{{option}}">{{option}}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endmacro %}
+
+
 {% macro long_text_input(label,name,required) %}
-<div class="input-box {% if value %}focus{% endif %}">
+<div class="input-box">
     <label class="input-label">
         <span class="label"> {{label}} </span>
         <span class="cover_line"></span>
@@ -66,6 +96,42 @@
 </div>
 {% endmacro %}
 
+{% macro date_input(label,name,required) %}
+<div class="input-box">
+    <label class="input-label">{{label}}</label>
+    <input 
+    type="text"
+    name="{{name}}" 
+    class="input-1 {{ 'needs-validation' if required }}" 
+    onfocus="setFocus(true,this,this.parentNode),turnToDateInput(this)"
+    onblur="setFocus(false,this,this.parentNode),turnToTextInput(this)"/>
+</div>
+{% endmacro %}
+
+{% macro datetime_input(label,name,required) %}
+<div class="input-box">
+    <label class="input-label">{{label}}</label>
+    <input 
+    type="text"
+    name="{{name}}" 
+    class="input-1 {{ 'needs-validation' if required }}" 
+    onfocus="setFocus(true,this,this.parentNode),turnToDateTimeInput(this)"
+    onblur="setFocus(false,this,this.parentNode),turnToTextInput(this)"/>
+</div>
+{% endmacro %}
+
+{% macro time_input(label, name, required) %}
+<div class="input-box">
+    <label class="input-label">{{label}}</label>
+    <input 
+    type="text"
+    name="{{name}}" 
+    class="input-1 {{ 'needs-validation' if required }}" 
+    onfocus="setFocus(true,this,this.parentNode),turnToTimeInput(this)"
+    onblur="setFocus(false,this,this.parentNode),turnToTextInput(this)"/>
+</div>
+{% endmacro %}
+
 {% macro boolean_input(label,name,required) %}
 <div class="input-box for_checkbox">
     <label for="checkbox_{{name}}" class="checkbox-label">{{label}}</label>
@@ -78,6 +144,25 @@
         data-field_name="{{name}}"/>
         <span class="slider"></span>
     </div>
+</div>
+{% endmacro %}
+
+{% macro manytomany_input(label, name, required, related_model=related_model) %}
+<div class="input-box multi_select">
+    <label class="input-label">{{label}}</label>
+    <div id="selected_options_{{name}}" class="input-1 selected_options {{ 'readonly_div' if readonly }}" data-name="{{name}}" onclick="showOptions(this),setFocusForManyToMany(this)">
+    </div>
+    <div id="options_list_{{name}}" class="options_list many_to_many_container" onclick="setFocusForManyToMany(this)" style="display: none;" data-related_model="{{related_model}}" data-filled="false" data-name="{{name}}">
+        <input 
+        type="text" 
+        class="text_input_select manytomany_text_search"
+        id="text_input_select_{{name}}"
+        data-name="{{name}}"
+        onkeyup="searchOptions(this)"/>
+        <div class="create_new_option" data-field_name="{{name}}" data-url="{{url_for('api.modal_create_page',model=related_model)}}" data-title="Criar {{label}}" data-modal_id="modal_{{name}}" onclick="loadModal(this)"> Criar ... </div>
+    </div>
+    <select name="{{name}}" id="{{name}}" multiple style="display: none;">
+    </select>
 </div>
 {% endmacro %}
 

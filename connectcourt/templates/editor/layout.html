@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% import 'macros/animations.html' as animations %}
 <html lang="en">
 
     <head>
@@ -28,6 +29,9 @@
     </head>
 
     <body class="editor_body">
+        <div id="loading-overlay">
+            {{ animations.unfolding_circles_loader() }}
+        </div>
         <header class="editor_header">
             <nav class="editor_navbar"> 
                 <ul class="editor_navbar_items_container">

@@ -7,7 +7,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from connectcourt.tools.input_tools import Field, Block , Form
 
 class Association_PlayerLesson(db.Model ,model.Model, model.Base):
-    __tablename__ = 'players_in_lesson'
+    __tablename__ = 'player_in_lesson'
     __table_args__ = (
         db.UniqueConstraint('player_id', 'lesson_id', name='_player_lesson_uc'),
         {'extend_existing': True}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% import 'macros/header.html' as header %}
+{% import 'macros/animations.html' as animations %}
 <html lang="en">
 
     <head>
@@ -27,6 +28,9 @@
     </head>
 
     <body>
+        <div id="loading-overlay">
+            {{ animations.unfolding_circles_loader() }}
+        </div>
         {{ header.header_block() }}
         <div class="global_container">
             {% block main %}{% endblock %}

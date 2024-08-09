@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const weekDaysElement = document.querySelector('.week-days');
     const weekDaysMobileElement = document.querySelector('.week-days-mobile');
+    const eventInfoElement = document.querySelector('.event-info-header');
     const timeLabelsElement = document.querySelector('.time-labels');
     const calendarGridElement = document.querySelector('.calendar-grid');
     const datePickerButton = document.getElementById('date-picker-button');
@@ -10,6 +11,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextWeekButton = document.getElementById('next-week');
     const datePicker = document.querySelector('.date-picker');
     const dailyCalendar = document.querySelector('.daily-calendar');
+    // const checkbox = document.getElementById('checkbox_singleClass');
+    const singleLessonGroups = document.querySelectorAll('.form-group.single_lesson');
+    const scheduledLessonGroups = document.querySelectorAll('.form-group.scheduled_lessons');
+    // const submitFormButton = document.getElementById('lesson_form_submit')
+    const eventInfoHeader = document.querySelector('.event-info-header');
+
+    function toggleLessonGroups() {
+        if (checkbox.checked) {
+            singleLessonGroups.forEach(group => group.style.display = 'block');
+            scheduledLessonGroups.forEach(group => group.style.display = 'none');
+        } else {
+            singleLessonGroups.forEach(group => group.style.display = 'none');
+            scheduledLessonGroups.forEach(group => group.style.display = 'block');
+        }
+    }
+
+    //toggleLessonGroups();
+
+    //checkbox.addEventListener('change', toggleLessonGroups);
 
     let currentDate = new Date();
     let today = new Date();
@@ -65,6 +85,66 @@ document.addEventListener('DOMContentLoaded', function() {
         return formattedDate
     }
 
+    async function fetchLessons(startDate, endDate) {
+        try {
+            const response = await fetch(`/api/lessons?start_date=${startDate}&end_date=${endDate}`);
+            const lessons = await response.json();
+            const events = lessons.map(lesson => {
+                let lessonDate = new Date(lesson.datetime);
+                let startHour = lessonDate.getHours();
+                let startMinute = lessonDate.getMinutes();
+                let durationParts = lesson.duration.split(':');
+                let endHour = startHour + parseInt(durationParts[0]);
+                let endMinute = startMinute + parseInt(durationParts[1]);
+
+                if (endMinute >= 60) {
+                    endHour += Math.floor(endMinute / 60);
+                    endMinute = endMinute % 60;
+                }
+
+                return {
+                    id: lesson.id,
+                    title: lesson.title,
+                    weekDay: lessonDate.getDay(),
+                    begging: `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`,
+                    end: `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`,
+                    color: getColorForLevel(lesson.level),
+                    edit_modal_url: lesson.edit_modal_url
+                };
+            });
+            addEvents(events);
+        } catch (error) {
+            console.error('Error fetching lessons:', error);
+        }
+    }
+
+    async function fetchPlayersInLesson(lesson_id) {
+        try {
+            const response = await fetch(`/api/players_in_lesson/${lesson_id}`);
+            const players = await response.json();
+            return players
+        } catch (error) {
+            console.error('Error fetching players:', error);
+        }
+    }
+
+    function getColorForLevel(level) {
+        switch (level) {
+            case 'Very Low':
+                return '#dc7171';
+            case 'Low':
+                return '#b9b9ff';
+            case 'Medium':
+                return '#5db25d';
+            case 'High':
+                return '#ffb347';
+            case 'Very High':
+                return '#ff6961';
+            default:
+                return '#b9b9ff';
+        }
+    }
+
     function renderCalendar() {
         weekDaysElement.innerHTML = '';
         timeLabelsElement.innerHTML = '';
@@ -73,6 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
         dailyCalendar.innerHTML = '';
 
         const weekDays = getWeekDays(new Date(currentDate));
+        const startDate = weekDays[0].toISOString().split('T')[0];
+        const endDate = weekDays[6].toISOString().split('T')[0];
 
         weekDays.forEach((day, index) => {
             const dayElement = document.createElement('div');
@@ -83,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const clonedDayElement = dayElement.cloneNode(true);
 
             clonedDayElement.addEventListener('click', function() {
-                console.log('HERE')
                 hideAllSlots();
                 showSlot(index);
                 clonedDayElement.classList.add('active');
@@ -117,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const emptyTimeLabel = document.createElement('div');
         emptyTimeLabel.classList.add('time-label');
         timeLabelsElement.appendChild(emptyTimeLabel);
-        for (let hour = 7; hour <= 19; hour++) {
+        for (let hour = 7; hour <= 22; hour++) {
             const timeLabel = document.createElement('div');
             timeLabel.classList.add('time-label');
             timeLabel.textContent = `${hour}:00`;
@@ -133,15 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        let events = [
-            {title:"Meeting with Bob", weekDay:1, begging:"08:00", end:"09:30",color:"#dc7171"},
-            {title:"Lunch Break", weekDay:1, begging:"08:30", end:"10:00",color:"#b9b9ff"},
-            {title:"Meeting with Bob", weekDay:2, begging:"10:00", end:"12:00",color:"#5db25d"},
-            {title:"Lunch Break", weekDay:4, begging:"12:00", end:"13:00",color:"#b9b9ff"},
-            {title:"Lunch Break", weekDay:5, begging:"12:30", end:"14:45",color:"#b9b9ff"},
-        ]
-        
-        addEvents(events)
+        fetchLessons(startDate, endDate);
 
         const existingDateInputText = document.querySelector('.date-input-text');
         if (existingDateInputText) {
@@ -154,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateCurrentTimeIndicator();
         setInterval(updateCurrentTimeIndicator, 60000);
+        hideLoading()
     }
 
     function setWeek(date) {
@@ -162,13 +236,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function addEvents(events) {
-        for (obj of events){
-            addEventGrid(obj.title, obj.weekDay, obj.begging, obj.end, obj.color);
-            addEventDaily(obj.title, obj.weekDay, obj.begging, obj.end, obj.color);
+        for (const obj of events) {
+            addEventGrid(obj.id, obj.title, obj.weekDay, obj.begging, obj.end, obj.color, obj.edit_modal_url);
+            addEventDaily(obj.id, obj.title, obj.weekDay, obj.begging, obj.end, obj.color, obj.edit_modal_url);
         }
     }
 
-    function addEventGrid(title, day, startTime, endTime, color) {
+    function addEventGrid(id, title, day, startTime, endTime, color, url) {
         const [startHour, startMinute] = startTime.split(":").map(Number);
         const [endHour, endMinute] = endTime.split(":").map(Number);
 
@@ -193,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const endSlot = (endHour - 7) * 60 + endMinute;
         const duration = endSlot - startSlot;
 
-        const timeSlotIndex = (startHour - 7) * 7 + day;
+        const timeSlotIndex = (startHour - 7) * 7 + day + 1;
 
         const topPosition = (startMinute / 60) * 100;
         eventElement.style.top = `${topPosition - 2}px`;
@@ -201,9 +275,33 @@ document.addEventListener('DOMContentLoaded', function() {
         
         eventElement.appendChild(eventBlockElement)
         calendarGridElement.children[timeSlotIndex].appendChild(eventElement);
+
+        var name = title.replace(/\s+/g, '_');
+        eventElement.setAttribute('data-field_name', name);
+        eventElement.setAttribute('data-url', url);
+        eventElement.setAttribute('data-title', 'Editar Aula');
+        eventElement.setAttribute('data-modal_id', `modal_${name}`);
+
+        eventElement.addEventListener('click', async function() {
+            await loadModal(eventElement);
+            const iframe = await waitForElement('#hidden_iframe_Aulas');
+            const confirmChangeButton = await waitForElement(`#confirm_create_${name}`);
+            const cancelChangeButton = await waitForElement(`#cancel_create_${name}`);
+
+            confirmChangeButton.addEventListener('click', function() {
+                showLoading();
+            });
+
+            cancelChangeButton.addEventListener('click', function() {
+                renderCalendar();
+            });
+            iframe.addEventListener('load', function() {
+                renderCalendar();
+            });
+        });
     }
 
-    function addEventDaily(title, day, startTime, endTime, color) {    
+    function addEventDaily(id, title, day, startTime, endTime, color, url) {    
         const eventElement = document.createElement('div');
         eventElement.classList.add('event');
     
@@ -225,6 +323,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
         const dailyElement = dailyCalendar.children[day];
         dailyElement.appendChild(eventElement);
+
+        var name = title.replace(/\s+/g, '_');
+        eventElement.setAttribute('data-field_name', name);
+        eventElement.setAttribute('data-url', url);
+        eventElement.setAttribute('data-title', 'Editar Aula');
+        eventElement.setAttribute('data-modal_id', `modal_${name}`);
+
+        eventElement.addEventListener('click', async function() {
+            await loadModal(eventElement);
+            const iframe = await waitForElement('#hidden_iframe_Aulas');
+            const confirmChangeButton = await waitForElement(`#confirm_create_${name}`);
+            const cancelChangeButton = await waitForElement(`#cancel_create_${name}`);
+
+            confirmChangeButton.addEventListener('click', function() {
+                showLoading();
+            });
+
+            cancelChangeButton.addEventListener('click', function() {
+                console.log('Here')
+                renderCalendar();
+            });
+            iframe.addEventListener('load', function() {
+                renderCalendar();
+            });
+        });
     }
 
     function updateCurrentTimeIndicator() {
@@ -243,6 +366,81 @@ document.addEventListener('DOMContentLoaded', function() {
         timeIndicatorElement.style.top = `${(totalMinutes / 60) * 100 + 50}px`;
 
         calendarGridElement.appendChild(timeIndicatorElement);
+    }
+
+    function submitLessonForm(ele){
+        let form_id = ele.dataset.form_id;
+        let form = document.getElementById(form_id);
+    
+        form.submit();
+        form.reset();
+
+        let player_box = document.getElementById('selected_options_players')
+        player_box.innerHTML = '';
+        
+        var iframe = document.getElementById('hidden_iframe');
+        iframe.onload = function() {
+            hideLoading();
+            renderCalendar();
+        };
+    }
+
+    async function getLessonInfo(id){
+        
+    }
+
+    async function showEventInfo(lesson_id){
+        eventInfoElement.innerHTML = '';
+        let players = await fetchPlayersInLesson(lesson_id);
+        let playersDiv = document.createElement('div');
+        playersDiv.className = 'players-div';
+        for (let player of players){
+
+            let playerDiv = document.createElement('div');
+            playerDiv.className = 'player-div';
+
+            let playerImg = document.createElement('img');
+            playerImg.src = `static/images/${player.image_url.trim()}`;
+            playerImg.alt = player.name;
+            playerImg.className = 'player-img';
+
+            let playerName = document.createElement('div');
+            playerName.textContent = player.name;
+            playerName.className = 'player-name';
+
+            let playerDelete = document.createElement('div');
+            playerDelete.innerHTML = '&times;';
+            playerDelete.className = 'player-delete';
+
+            let player_id = player.id
+            playerDelete.addEventListener('click', async function() {
+                const response = await fetch('/api/remove_lesson_player_relationship', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id1: lesson_id,
+                        id2: player_id
+                    })
+                })
+                if (response.ok) {
+                    const result = await response.json();
+                    showEventInfo(lesson_id);
+                } else {
+                    console.error('Failed to remove lesson player relationship');
+                }
+            });
+
+            playerDiv.appendChild(playerImg);
+            playerDiv.appendChild(playerName);
+            playerDiv.appendChild(playerDelete);
+
+            playersDiv.appendChild(playerDiv)
+
+        } 
+        eventInfoElement.appendChild(playersDiv);
+        eventInfoElement.style.display = 'block';
     }
 
     datePickerButton.addEventListener('click', function() {
@@ -268,6 +466,18 @@ document.addEventListener('DOMContentLoaded', function() {
     nextWeekButton.addEventListener('click', function() {
         currentDate.setDate(currentDate.getDate() + 7);
         setWeek(currentDate);
+    });
+
+    /* submitFormButton.addEventListener('click', function(event){
+        const element = event.currentTarget;
+        submitLessonForm(element);
+        closeModal(undefined, element)
+    }) */
+
+    document.addEventListener('click', (e) => {
+        if (!eventInfoHeader.contains(e.target)) {
+            eventInfoHeader.style.display = 'none';
+        }
     });
 
     renderCalendar();

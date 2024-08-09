@@ -1,6 +1,6 @@
 from connectcourt import model 
 from connectcourt.sql_db import db
-from sqlalchemy import Column, Integer , String , Enum , ForeignKey , Boolean
+from sqlalchemy import Column, Integer , String , Enum , Text, ForeignKey , Boolean
 from sqlalchemy.orm import relationship
 
 from connectcourt.tools.input_tools import Field, Block, Tab , Form
@@ -15,6 +15,7 @@ class Player(db.Model, model.Model, model.Base):
     name = Column(String(80))
     level = Column(Enum('Very Low','Low','Medium','High','Very High',name='level'))
     phone_number = Column(Integer)
+    image_url = Column(Text,default= "Player/default_player.png")
 
     lessons_relations = relationship('Association_PlayerLesson', back_populates='player', cascade="all, delete-orphan")
     scheduled_lessons_relations = relationship('Association_PlayerScheduledLesson', back_populates='player', cascade="all, delete-orphan")
@@ -32,6 +33,11 @@ class Player(db.Model, model.Model, model.Base):
         def get_field(name,label,type,options=None,required=False,related_model=None):
             return Field(instance_id=self.id,model=self.model_name,name=name,label=label,type=type,options=options,required=required,related_model=related_model)
         form = Form()
+
+        fields = [get_field(name='image_url',label='Fotografia',type='EditablePicture')]
+        picture_block = Block('picture_block',fields)
+        form.add_block(picture_block)
+
         # Create Info block
 
         fields = [

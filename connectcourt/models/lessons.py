@@ -16,7 +16,10 @@ class Lesson(db.Model, model.Model, model.Base):
     level = Column(Enum('Very Low','Low','Medium','High','Very High', name='level'))
     duration = Column(Time)
     datetime = Column(DateTime)  
+    scheduled_lesson_id = Column(Integer, ForeignKey('scheduled_lessons.id'))
     
+    scheduled_lesson = relationship('ScheduledLesson', back_populates='lessons')
+
     players_relations = relationship('Association_PlayerLesson', back_populates='lesson', cascade="all, delete-orphan")
     coaches_relations = relationship('Association_CoachLesson', back_populates='lesson', cascade="all, delete-orphan")
 
@@ -45,3 +48,12 @@ class Lesson(db.Model, model.Model, model.Base):
         form.add_block(info_block)
 
         return form
+    
+    def get_basic_create_form(self):
+        return self.get_create_form()
+    
+    def add_players(self, players):
+        self.add_entities(players, 'players_relations')
+
+    def add_coaches(self, coaches):
+        self.add_entities(coaches, 'coaches_relations')

@@ -32,7 +32,7 @@ function openModal(modal) {
     }
 }
 
-function createModal(title, modal_id, field_name,form_to_submit) {
+function createModal(title, modal_id, field_name, form_to_submit) {
     var modal = document.getElementById(modal_id);
     if (modal) {
         return modal
@@ -71,6 +71,7 @@ function createModal(title, modal_id, field_name,form_to_submit) {
     var cancelButton = document.createElement('div');
     cancelButton.setAttribute('class', 'btn-secondary btn closeModal');
     cancelButton.setAttribute('data-modal_id', modal_id);
+    cancelButton.setAttribute('id', 'cancel_create_' + field_name);
     cancelButton.textContent = 'Cancelar';
 
     var confirmButton = document.createElement('div');

@@ -7,7 +7,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from connectcourt.tools.input_tools import Field, Block , Form
 
 class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
-    __tablename__ = 'players_in_scheduled_lesson'
+    __tablename__ = 'player_in_scheduled_lesson'
     __table_args__ = (
         db.UniqueConstraint('player_id', 'scheduled_lesson_id', name='_player_scheduled_lesson_uc'),
         {'extend_existing': True}
@@ -25,17 +25,17 @@ class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
 
     @hybrid_property
     def name(self):
-        return f"{self.player} in {self.lesson}"
+        return f"{self.player} in {self.scheduled_lesson}"
 
     def __repr__(self):
         try:
-            return f"{self.player}: {self.lesson}"
+            return f"{self.player}: {self.scheduled_lesson}"
         except:
             return f"Empty {self.model_name}"
     
     def __str__(self):
         try:
-            return f"{self.lesson}: {self.player}"
+            return f"{self.scheduled_lesson}: {self.player}"
         except:
             return f"Empty {self.model_name}"
         
@@ -43,7 +43,7 @@ class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
     def display_all_info(self):
         searchable_column = {'field': 'player','label':'Jogador'}
         table_columns = [
-            {'field': 'lesson','label':'Aula'},
+            {'field': 'scheduled_lesson','label':'Aula'},
             searchable_column,
         ]
         return searchable_column , table_columns
@@ -55,7 +55,7 @@ class Association_PlayerScheduledLesson(db.Model ,model.Model, model.Base):
 
         # Create Info block
         fields = [
-            get_field(name='lesson',label='Aulas',type='ManyToOne',related_model='Lesson'),
+            get_field(name='scheduled_lesson',label='Aulas',type='ManyToOne',related_model='ScheduledLesson'),
             get_field(name='player',label='Jogador',type='ManyToOne',related_model='Player'),
             
         ]

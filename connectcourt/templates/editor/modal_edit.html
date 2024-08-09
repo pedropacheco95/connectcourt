@@ -1,0 +1,6 @@
+{% import 'macros/editor.html' as editor %}
+
+<form class="editor_objects_container modal_create_model editor_create_form" action="{{data['post_url']}}" method="post" onsubmit="return validateFormWithNoStyles(this);" enctype="multipart/form-data" target="hidden_iframe_{{data['title']}}">
+    {{editor.edit_form(data)}}
+</form>
+<iframe id="hidden_iframe_{{data['title']}}" name="hidden_iframe_{{data['title']}}" class="hidden_iframe" style="display:none;"></iframe>

@@ -241,9 +241,9 @@
 {% endmacro %}
 
 {% macro edit_main(data,readonly=False) %}
-<form class="editor_objects_container show_objects" action="{{data['post_url']}}" method="post" class="editor_create_form" onsubmit="return validateFormWithNoStyles(this);" enctype="multipart/form-data" target="hidden_iframe">
+<form class="editor_objects_container show_objects editor_create_form" action="{{data['post_url']}}" method="post" onsubmit="return validateFormWithNoStyles(this);" enctype="multipart/form-data" target="hidden_iframe_{{data['title']}}">
     {{edit_header(data,readonly)}}
     {{edit_form(data,readonly)}}
 </form>
-<iframe id="hidden_iframe" name="hidden_iframe" style="display:none;"></iframe>
+<iframe id="hidden_iframe_{{data['title']}}" name="hidden_iframe_{{data['title']}}" class="hidden_iframe" style="display:none;"></iframe>
 {% endmacro %}

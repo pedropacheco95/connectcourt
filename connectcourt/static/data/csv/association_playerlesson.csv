@@ -1,0 +1,18 @@
+creation_datetime,last_change_datetime,id,player_id,lesson_id,name
+2024-07-30 12:49:39.384828,2024-07-30 12:49:39.384833,1,3,16,Player: Pedro Pacheco in Lesson: Aula terça de manha
+2024-07-30 13:15:48.175912,2024-07-30 13:15:48.175919,3,3,17,Player: Pedro Pacheco in Lesson: Aula de quarta de manhã
+2024-07-30 13:15:48.182656,2024-07-30 13:15:48.182661,5,4,17,Player: Luís Fragoso in Lesson: Aula de quarta de manhã
+2024-07-30 14:11:08.504763,2024-07-30 14:11:08.504770,6,1,32,Player: Antonio Amorim in Lesson: Aula de sexta de manhã
+2024-07-30 14:11:08.511856,2024-07-30 14:11:08.511861,7,3,32,Player: Pedro Pacheco in Lesson: Aula de sexta de manhã
+2024-07-30 14:11:08.515687,2024-07-30 14:11:08.515690,8,2,32,Player: Tomás Pacheco in Lesson: Aula de sexta de manhã
+2024-07-30 14:11:08.518812,2024-07-30 14:11:08.518815,9,4,32,Player: Luís Fragoso in Lesson: Aula de sexta de manhã
+2024-07-30 14:50:37.246833,2024-07-30 14:50:37.246837,10,5,33,Player: Ana Martins in Lesson: Aula de sexta de manhã
+2024-07-30 14:55:37.215923,2024-07-30 14:55:37.215926,11,6,34,Player: João Sousa in Lesson: Aula de sexta de manhã
+2024-07-30 15:00:37.185009,2024-07-30 15:00:37.185013,12,7,35,Player: Rita Silva in Lesson: Aula de sexta de manhã
+2024-07-30 15:05:37.154095,2024-07-30 15:05:37.154099,13,8,36,Player: Manuel Costa in Lesson: Aula de sexta de manhã
+2024-07-30 15:10:37.123182,2024-07-30 15:10:37.123186,14,9,37,Player: Mariana Rocha in Lesson: Aula de sexta de manhã
+2024-07-30 15:15:37.092268,2024-07-30 15:15:37.092272,15,10,38,Player: Daniel Ferreira in Lesson: Aula de sexta de manhã
+2024-07-30 15:20:37.061354,2024-07-30 15:20:37.061358,16,1,39,Player: Antonio Amorim in Lesson: Aula de sexta de manhã
+2024-07-30 15:25:37.030440,2024-07-30 15:25:37.030444,17,2,40,Player: Tomás Pacheco in Lesson: Aula de sexta de manhã
+2024-07-30 15:30:36.999526,2024-07-30 15:30:36.999531,18,3,40,Player: Pedro Pacheco in Lesson: Aula de sexta de manhã
+2024-07-30 15:35:36.968612,2024-07-30 15:35:36.968616,19,4,40,Player: Luís Fragoso in Lesson: Aula de sexta de manhã

@@ -206,16 +206,19 @@ async function confirmBasicCreate(form,modal_id,field_name){
     const response = await submitAndGetResponse(form);
     const options_list = document.getElementById('options_list_' + field_name);
     const optionButtonBox = document.getElementById('selected_options_' + field_name);
-    let option_div = createManyToManyOption(field_name,response.name,response.value,true);
-    options_list.insertBefore(option_div, options_list.lastElementChild);
-    addOption(option_div);
+    if (options_list){
+        let option_div = createManyToManyOption(field_name,response.name,response.value,true);
+        options_list.insertBefore(option_div, options_list.lastElementChild);
+        addOption(option_div);
+        setFocusForManyToMany(optionButtonBox);
+    }
     
-    setFocusForManyToMany(optionButtonBox);
     let modal = document.getElementById(modal_id);
     modal.style.display = "none";
 }
 
 async function submitAndGetResponse(form){
+    let iframe = document.getElementById(form.target);
     let url = form.action;
     let data = new FormData(form);
     const response = await fetch(url, {
@@ -224,11 +227,15 @@ async function submitAndGetResponse(form){
     })
 
     const jsonResponse = await response.json();
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(jsonResponse);
+    iframe.contentDocument.close();
     return jsonResponse;
 }
 
 
-function loadModal(element){
+async function loadModal(element){
     let url = element.dataset.url;
     let title = element.dataset.title;
     let modal_id = element.dataset.modal_id;

@@ -195,6 +195,9 @@ class Model():
     def editor_url(self):
         return url_for('editor.display', model=self.model_name, id=self.id)
     
+    def model_edit_url(self):
+        return url_for('api.modal_edit_page', model=self.model_name, id=self.id)
+    
     def get_dict(self):
         instance_dict = {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
@@ -205,6 +208,30 @@ class Model():
     
     def get_model_names(self):
         return [obj.model_name for obj in self.all_tables_object().values() if hasattr(obj, 'model_name')]
+    
+    def add_entities(self, entities, relationship_attr):
+        Association_Model = getattr(self.__class__, relationship_attr).property.mapper.class_
+
+        foreign_keys = [c for c in Association_Model.__table__.columns if c.foreign_keys]
+        self_key = None
+        foreign_key = None
+
+        for fk in foreign_keys:
+            for key in fk.foreign_keys:
+                if key.column.table.name == self.__tablename__:
+                    self_key = fk.name
+                else:
+                    foreign_key = fk.name
+
+        if not self_key or not foreign_key:
+            raise ValueError("Could not determine the correct foreign key columns.")
+
+        for entity in entities:
+            if isinstance(entity, int):
+                association = Association_Model(**{foreign_key: entity, self_key: self.id})
+            else:
+                association = Association_Model(**{foreign_key: entity.id, self_key: self.id})
+            association.create()
 
 
 class Image(db.Model, Base):

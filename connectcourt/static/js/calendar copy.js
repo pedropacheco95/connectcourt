@@ -37,9 +37,6 @@ function saveEvent() {
     var startHour = modal.startHour;
     var dayIndex = modal.dayIndex;
 
-    console.log('modal.currentCell',modal.currentCell)
-    console.log('eventTitle',eventTitle)
-    console.log('duration',duration)
     if (modal.currentCell && eventTitle && duration) {
         var tbody = document.querySelector('table tbody');
         var eventDiv = document.createElement('div');

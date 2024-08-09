@@ -7,6 +7,15 @@ $check-top: ($check-height - calc($check-width/8));
 $check-thickness: 5px;
 $check-color: $brand-success;
 
+#loading-overlay{
+    background-color: rgba(255,255,255, 0.80);
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 1000;
+    transition: background-color 0.5s ease;
+}
+
 .circle-loader {
     margin-bottom: calc($loader-size / 2);
     border: 5px solid rgba(0, 0, 0, 0.2);
@@ -558,8 +567,8 @@ $check-color: $brand-success;
         margin-left: -10px;
         
         border-radius: 999px;
-        
-        background-color: #1e3f57;
+        background-color: $primary-color;
+        box-shadow: $box-shadow;
         
         transform-style: perserve-3d;
         

@@ -61,6 +61,11 @@ $border-radius: 5px;
             display: none;
         }
     }
+
+    .input-label-select{
+        top: 1.05rem;
+    }
+
     .input-1 {
         box-sizing: border-box;
         height: 3rem;
@@ -77,6 +82,10 @@ $border-radius: 5px;
         outline: none;
         border: 2px solid $active-color;
         }
+    }
+
+    select{
+        height: 4rem!important;
     }
 
     textarea{
@@ -181,7 +190,7 @@ $border-radius: 5px;
     .input-label {
         color: $active-color;
         top: -0.6rem;
-        background: rgba(255, 255, 255, 0);
+        background: rgb(255, 255, 255);
         font-size: 0.8rem;
 
         transition: 250ms;
@@ -203,6 +212,90 @@ $border-radius: 5px;
             display: block;
         }
     }
+}
+
+.multi_select{
+    display: flex;
+    flex-direction: column;
+
+    .options_list{
+        margin-top: 0.5rem;
+        opacity: 1;
+        visibility: visible;
+        max-height: calc(14 * 1rem);
+        background: #fff;
+        border-radius: 0.4rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border: 1px solid #d9dbde;
+        box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
+        position: absolute;
+        width: 100%;
+        top: 4rem;
+        z-index: 1000;
+
+        .options{
+            padding: 0.5rem 2rem;
+            color: #666666;
+            font-size: 1rem;
+            display: none;
+        }
+
+        
+        .options:nth-child(-n+4) {
+            display: inherit;
+        }
+        
+        .options:hover{
+            background-color: #4d84fe;
+            color: #343434;
+        }
+
+        .create_new_option{
+            padding: 0.4rem 1rem
+        }
+
+        .create_new_option:hover{
+            background-color: #b8b8b8;
+        }
+
+    }
+
+    .selected_options{
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 3rem;
+
+        .text_input_select{
+            border: none;
+            outline: none;
+        }
+
+        .option_div{
+            background-color: #eef4ff;
+            padding: 0.5rem;
+            border-radius: 0.4rem;
+            font-size: 0.9rem;
+            margin: 0.25rem 0.5rem;
+
+            span{
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.manytomany_text_search{
+    background: #fff;
+    width: 96%;
+    margin: 2%;
+    border-radius: 0.2rem;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    border: 1px solid rgb(205,205,205);
+    outline: none;
 }
 
 .submit_button{
