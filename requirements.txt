@@ -6,7 +6,8 @@ Flask-Migrate==4.0.3
 Flask-Session==0.4.0
 Flask-SQLAlchemy==2.5.1
 Jinja2==3.0.1
-numpy==2.0.1
+pandas==1.4.2
+numpy==1.26.4
 py==1.10.0
 pyScss==1.4.0
 pytest==6.2.4
